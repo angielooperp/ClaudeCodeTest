@@ -1,0 +1,366 @@
+<!--
+=======================================================
+  CONTACT FORM — WORDPRESS.COM EMBED SNIPPET
+=======================================================
+
+SETUP (do this before embedding):
+  1. Go to https://formspree.io and create a free account.
+  2. Click "New Form", name it (e.g. "Contact Form"), and copy your endpoint URL.
+     It looks like: https://formspree.io/f/abcdefgh
+  3. In the <form> tag below, replace XXXXXXXX with your actual Formspree form ID.
+  4. After your first live submission, Formspree will email you a confirmation link.
+     You MUST click it before submitted emails are delivered to your inbox.
+
+EMBED IN WORDPRESS.COM:
+  1. Open the page/post in the WordPress.com block editor.
+  2. Click "+" → search for "Custom HTML" → select it.
+  3. Paste this entire file's contents into the Custom HTML block.
+  4. Replace XXXXXXXX with your real Formspree form ID (step 3 above).
+  5. Click "Preview" to see it live, then "Update" or "Publish".
+  Note: The form appears static in the editor — scripts only run on the live page.
+
+CUSTOMIZATION:
+  - Change colors by editing the CSS variables at the top of the <style> block.
+  - The form inherits your theme's font automatically.
+
+FREE TIER LIMITS:
+  - Formspree free: 50 submissions/month.
+=======================================================
+-->
+
+<style>
+  /* ── CSS variables — edit these to match your site ── */
+  #cf-wrapper {
+    --cf-primary:    #2563eb;
+    --cf-primary-dk: #1d4ed8;
+    --cf-error:      #dc2626;
+    --cf-border:     #d1d5db;
+    --cf-border-focus: #93c5fd;
+    --cf-bg:         #ffffff;
+    --cf-label:      #374151;
+    --cf-input-bg:   #f9fafb;
+    --cf-success-bg: #f0fdf4;
+    --cf-success:    #16a34a;
+    --cf-banner-bg:  #fef2f2;
+    --cf-banner:     #b91c1c;
+    --cf-radius:     8px;
+  }
+
+  /* ── Reset & scoping ── */
+  #cf-wrapper * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  #cf-wrapper {
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--cf-label);
+    max-width: 600px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  /* ── Fields ── */
+  #cf-wrapper .cf-field {
+    margin-bottom: 1.25rem;
+  }
+
+  #cf-wrapper label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+    color: var(--cf-label);
+  }
+
+  #cf-wrapper label .cf-optional {
+    font-weight: 400;
+    font-size: 0.8rem;
+    color: #9ca3af;
+    margin-left: 0.3rem;
+  }
+
+  #cf-wrapper input,
+  #cf-wrapper textarea {
+    display: block;
+    width: 100%;
+    padding: 0.6rem 0.75rem;
+    font-family: inherit;
+    font-size: 1rem;
+    color: #111827;
+    background: var(--cf-input-bg);
+    border: 1.5px solid var(--cf-border);
+    border-radius: var(--cf-radius);
+    transition: border-color 0.15s, box-shadow 0.15s;
+    outline: none;
+  }
+
+  #cf-wrapper input:focus,
+  #cf-wrapper textarea:focus {
+    border-color: var(--cf-border-focus);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    background: var(--cf-bg);
+  }
+
+  #cf-wrapper textarea {
+    min-height: 130px;
+    resize: vertical;
+  }
+
+  /* ── Validation errors ── */
+  #cf-wrapper .cf-error {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--cf-error);
+    margin-top: 0.3rem;
+    min-height: 1.1em;
+  }
+
+  #cf-wrapper .cf-has-error input,
+  #cf-wrapper .cf-has-error textarea {
+    border-color: var(--cf-error);
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
+  }
+
+  /* ── Submit button ── */
+  #cf-wrapper .cf-submit-row {
+    margin-top: 0.5rem;
+  }
+
+  #cf-wrapper button[type="submit"] {
+    display: inline-block;
+    padding: 0.65rem 1.75rem;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #ffffff;
+    background: var(--cf-primary);
+    border: none;
+    border-radius: var(--cf-radius);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  #cf-wrapper button[type="submit"]:hover:not(:disabled) {
+    background: var(--cf-primary-dk);
+  }
+
+  #cf-wrapper button[type="submit"]:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  #cf-wrapper .cf-btn-sending { display: none; }
+
+  /* ── Error banner ── */
+  #cf-banner {
+    display: none;
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    background: var(--cf-banner-bg);
+    border: 1px solid #fca5a5;
+    border-radius: var(--cf-radius);
+    font-size: 0.9rem;
+    color: var(--cf-banner);
+  }
+
+  /* ── Success message ── */
+  #cf-success {
+    display: none;
+    padding: 1.5rem;
+    background: var(--cf-success-bg);
+    border: 1px solid #bbf7d0;
+    border-radius: var(--cf-radius);
+    text-align: center;
+  }
+
+  #cf-success .cf-success-icon {
+    font-size: 2.5rem;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+
+  #cf-success h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--cf-success);
+    margin-bottom: 0.4rem;
+  }
+
+  #cf-success p {
+    font-size: 0.95rem;
+    color: #166534;
+  }
+</style>
+
+<div id="cf-wrapper">
+
+  <!-- ── Contact Form ── -->
+  <form id="cf-form" action="https://formspree.io/f/XXXXXXXX" method="POST" novalidate>
+
+    <!-- Name -->
+    <div class="cf-field" id="cf-field-name">
+      <label for="cf-name">Name</label>
+      <input type="text" id="cf-name" name="name" autocomplete="name" placeholder="Jane Smith">
+      <span class="cf-error" id="cf-err-name" role="alert" aria-live="polite"></span>
+    </div>
+
+    <!-- Email -->
+    <div class="cf-field" id="cf-field-email">
+      <label for="cf-email">Email</label>
+      <input type="email" id="cf-email" name="email" autocomplete="email" placeholder="jane@example.com">
+      <span class="cf-error" id="cf-err-email" role="alert" aria-live="polite"></span>
+    </div>
+
+    <!-- Phone (optional) -->
+    <div class="cf-field" id="cf-field-phone">
+      <label for="cf-phone">Phone <span class="cf-optional">(optional)</span></label>
+      <input type="tel" id="cf-phone" name="phone" autocomplete="tel" placeholder="+1 (555) 000-0000">
+      <span class="cf-error" id="cf-err-phone" role="alert" aria-live="polite"></span>
+    </div>
+
+    <!-- Message -->
+    <div class="cf-field" id="cf-field-message">
+      <label for="cf-message">Message</label>
+      <textarea id="cf-message" name="message" placeholder="How can I help you?"></textarea>
+      <span class="cf-error" id="cf-err-message" role="alert" aria-live="polite"></span>
+    </div>
+
+    <!-- Submit -->
+    <div class="cf-submit-row">
+      <button type="submit" id="cf-submit">
+        <span class="cf-btn-default">Send Message</span>
+        <span class="cf-btn-sending">Sending&#8230;</span>
+      </button>
+    </div>
+
+    <!-- Error banner -->
+    <div id="cf-banner"></div>
+
+  </form>
+
+  <!-- Success state (shown after successful submission) -->
+  <div id="cf-success" tabindex="-1" aria-live="polite">
+    <div class="cf-success-icon">&#10003;</div>
+    <h3>Message sent!</h3>
+    <p>Thanks for reaching out. I'll get back to you as soon as possible.</p>
+  </div>
+
+</div><!-- /#cf-wrapper -->
+
+<script>
+(function () {
+  'use strict';
+
+  var form    = document.getElementById('cf-form');
+  var btn     = document.getElementById('cf-submit');
+  var banner  = document.getElementById('cf-banner');
+  var success = document.getElementById('cf-success');
+
+  if (!form) return;
+
+  /* ── Helpers ── */
+  function showError(fieldId, msg) {
+    var field = document.getElementById('cf-field-' + fieldId);
+    var err   = document.getElementById('cf-err-' + fieldId);
+    if (field) field.classList.add('cf-has-error');
+    if (err)   err.textContent = msg;
+  }
+
+  function clearError(fieldId) {
+    var field = document.getElementById('cf-field-' + fieldId);
+    var err   = document.getElementById('cf-err-' + fieldId);
+    if (field) field.classList.remove('cf-has-error');
+    if (err)   err.textContent = '';
+  }
+
+  function setSubmitting(on) {
+    btn.disabled = on;
+    btn.querySelector('.cf-btn-default').style.display = on ? 'none'   : '';
+    btn.querySelector('.cf-btn-sending').style.display = on ? 'inline' : 'none';
+    banner.style.display = 'none';
+  }
+
+  /* ── Real-time error clearing ── */
+  ['name', 'email', 'phone', 'message'].forEach(function (id) {
+    var el = document.getElementById('cf-' + id);
+    if (el) el.addEventListener('input', function () { clearError(id); });
+  });
+
+  /* ── Validation ── */
+  function validate() {
+    var valid = true;
+    var firstInvalid = null;
+
+    var name    = document.getElementById('cf-name').value.trim();
+    var email   = document.getElementById('cf-email').value.trim();
+    var phone   = document.getElementById('cf-phone').value.trim();
+    var message = document.getElementById('cf-message').value.trim();
+
+    if (!name || name.length < 2) {
+      showError('name', 'Please enter your name.');
+      if (!firstInvalid) firstInvalid = document.getElementById('cf-name');
+      valid = false;
+    }
+
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      showError('email', 'Please enter a valid email address.');
+      if (!firstInvalid) firstInvalid = document.getElementById('cf-email');
+      valid = false;
+    }
+
+    if (phone && !/^[\d\s\-()+.]{7,}$/.test(phone)) {
+      showError('phone', 'Please enter a valid phone number.');
+      if (!firstInvalid) firstInvalid = document.getElementById('cf-phone');
+      valid = false;
+    }
+
+    if (!message || message.length < 10) {
+      showError('message', 'Please enter a message (at least 10 characters).');
+      if (!firstInvalid) firstInvalid = document.getElementById('cf-message');
+      valid = false;
+    }
+
+    if (firstInvalid) firstInvalid.focus();
+    return valid;
+  }
+
+  /* ── Submit handler ── */
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (!validate()) return;
+
+    setSubmitting(true);
+
+    fetch(form.action, {
+      method:  'POST',
+      headers: { 'Accept': 'application/json' },
+      body:    new FormData(form)
+    })
+    .then(function (res) {
+      if (res.ok) {
+        form.style.display    = 'none';
+        success.style.display = 'block';
+        success.focus();
+      } else {
+        return res.json().then(function (data) {
+          var msg = (data && data.errors)
+            ? data.errors.map(function (e) { return e.message; }).join(', ')
+            : 'Something went wrong. Please try again or email us directly.';
+          setSubmitting(false);
+          banner.textContent   = msg;
+          banner.style.display = 'block';
+        });
+      }
+    })
+    .catch(function () {
+      setSubmitting(false);
+      banner.textContent   = 'Could not send your message — please check your connection and try again.';
+      banner.style.display = 'block';
+    });
+  });
+
+}());
+</script>
